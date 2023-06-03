@@ -1,0 +1,30 @@
+﻿@model WebApplication2.Models.User
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+<h2>Welcome, @Model.Name!</h2>
+
+<p>Your appointments:</p>
+@if (Model.Appointments.Any())
+{
+    <ul>
+        @foreach (var appointment in Model.Appointments)
+        {
+            <li>@appointment.Date.ToShortDateString() - @appointment.Time</li>
+        }
+    </ul>
+}
+else
+{
+    <p>No appointments found.</p>
+}
+
+@Html.ActionLink("Logout", "Logout", "Account")
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <p>
+        @Html.ActionLink("View Calendar", "Calendar", "Appointment")
+    </p>
+}
