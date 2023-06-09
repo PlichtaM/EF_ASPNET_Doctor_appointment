@@ -12,7 +12,7 @@ using Projekt.Data;
 namespace Projekt.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230606230834_innit")]
+    [Migration("20230609231952_innit")]
     partial class innit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -246,13 +246,19 @@ namespace Projekt.Migrations
                     b.Property<int>("DoctorId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Notes")
+                    b.Property<int?>("DoctorId1")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PatientId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Remarks")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PatientName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("Slot")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Specialization")
                         .IsRequired()
@@ -260,25 +266,33 @@ namespace Projekt.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DoctorId");
+
+                    b.HasIndex("DoctorId1");
+
+                    b.HasIndex("PatientId");
+
                     b.ToTable("Appointments");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
-                            Date = new DateTime(2023, 6, 8, 1, 8, 33, 971, DateTimeKind.Local).AddTicks(7683),
+                            Date = new DateTime(2023, 6, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DoctorId = 1,
-                            Notes = "Brak uwag",
-                            PatientName = "John Doe",
-                            Specialization = "Pediatrics"
+                            PatientId = "1",
+                            Remarks = "Regular checkup",
+                            Slot = new DateTime(2023, 6, 12, 9, 0, 0, 0, DateTimeKind.Unspecified),
+                            Specialization = "Cardiology"
                         },
                         new
                         {
                             Id = 2,
-                            Date = new DateTime(2023, 6, 9, 1, 8, 33, 971, DateTimeKind.Local).AddTicks(7720),
+                            Date = new DateTime(2023, 6, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DoctorId = 2,
-                            Notes = "Brak uwag",
-                            PatientName = "Jane Smith",
+                            PatientId = "1",
+                            Remarks = "Skin rash",
+                            Slot = new DateTime(2023, 6, 12, 10, 0, 0, 0, DateTimeKind.Unspecified),
                             Specialization = "Dermatology"
                         });
                 });
@@ -308,7 +322,7 @@ namespace Projekt.Migrations
                         {
                             Id = 1,
                             Name = "Dr. Smith",
-                            Specialization = "Pediatrics"
+                            Specialization = "Cardiology"
                         },
                         new
                         {
@@ -329,14 +343,14 @@ namespace Projekt.Migrations
                         {
                             Id = "1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "177ed376-0bac-43e3-9ea2-82bd06f6b9a0",
+                            ConcurrencyStamp = "f10af449-2928-4eff-a769-596dc9303333",
                             Email = "abc@abc.pl",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedUserName = "ABC@ABC.PL",
-                            PasswordHash = "AQAAAAEAACcQAAAAEJl7LXWGtB3esT/sEReOlOI+ZcCdkUEjFW//R0VmpHwYBz2GX08mOXDYvwKqch3ZxA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEGo3XM5WVQCy72XHVw1gQBWQrMn/Wnm9fz5gt/x6t3mNKVjBZWG1mFMK0u5UM6pDPg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "85f63d79-9b11-4adb-80dc-5c023ff10f0b",
+                            SecurityStamp = "b61156be-464e-49f6-a0a9-08a231e37a29",
                             TwoFactorEnabled = false,
                             UserName = "abc@abc.pl"
                         });
@@ -391,6 +405,34 @@ namespace Projekt.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Projekt.Models.Appointment", b =>
+                {
+                    b.HasOne("Projekt.Models.Doctor", "Doctor")
+                        .WithMany()
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Projekt.Models.Doctor", null)
+                        .WithMany("Appointments")
+                        .HasForeignKey("DoctorId1");
+
+                    b.HasOne("Projekt.Models.User", "Patient")
+                        .WithMany()
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("Projekt.Models.Doctor", b =>
+                {
+                    b.Navigation("Appointments");
                 });
 #pragma warning restore 612, 618
         }

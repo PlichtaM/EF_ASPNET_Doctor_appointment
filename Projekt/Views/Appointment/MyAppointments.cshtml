@@ -1,5 +1,46 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model List<Projekt.Models.Appointment>
+
 @{
+    ViewData["Title"] = "My Appointments";
+}
+
+<h1>My Appointments</h1>
+
+@if (Model.Count > 0)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Specialization</th>
+
+                <th>Date</th>
+                <th>Slot</th>
+
+                <th>Remarks</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var appointment in Model)
+            { 
+                <tr>
+                    <td>@appointment.Specialization</td>
+                   
+                    <td>@appointment.Date.ToShortDateString()</td>
+                    <td>@appointment.Slot.ToShortTimeString()</td>
+
+                    <td>@appointment.Remarks</td>
+                    <td>
+                        <form asp-action="Delete" asp-route-id="@appointment.Id" onsubmit="return confirm('Are you sure you want to delete this appointment?');">
+                            <button type="submit" class="btn btn-danger">Cancel</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No appointments.</p>
 }

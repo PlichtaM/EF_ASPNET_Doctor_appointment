@@ -1,0 +1,109 @@
+﻿@model Projekt.Models.Appointment
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create Appointment</h1>
+
+<form asp-action="Create" id="createAppointmentForm">
+    <div class="form-group">
+        <label asp-for="Specialization">Specialization:</label>
+        <select id="specialization" name="specialization" class="form-control" onchange="getDoctors()">
+            <option value="">-- Select Specialization --</option>
+            @foreach (var specialization in ViewBag.Specializations)
+            {
+                <option value="@specialization">@specialization</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label asp-for="DoctorId">Doctor:</label>
+        <select id="doctor" name="doctor" class="form-control" onchange="getSlots()">
+            <option value="">-- Select Doctor --</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label asp-for="Date">Date:</label>
+        <input id="date" name="date" type="date" class="form-control" min="@DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")" max="@DateTime.Today.AddDays(5).ToString("yyyy-MM-dd")" value="@DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")" onchange="getSlots()">
+    </div>
+    <div class="form-group">
+        <label asp-for="Slot">Slot:</label>
+        <select id="slot" name="slot" class="form-control">
+            <option value="">-- Select Slot --</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label asp-for="Remarks">Remarks:</label>
+        <input asp-for="Remarks" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Create Appointment</button>
+</form>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#createAppointmentForm').submit(function (e) {
+                e.preventDefault();
+                var form = $(this);
+
+                $.ajax({
+                    type: "POST",
+                    url: form.attr('action'),
+                    data: form.serialize(),
+                    success: function () {
+                        window.location.href = "/Appointment/MyAppointments";
+                    }
+                });
+            });
+        });
+
+        function getDoctors() {
+            var specialization = document.getElementById("specialization").value;
+
+            if (specialization === "") {
+                document.getElementById("doctor").innerHTML = "<option value=''>-- Select Doctor --</option>";
+                return;
+            }
+
+            $.ajax({
+                type: "GET",
+                url: "/Appointment/GetDoctors?specialization=" + specialization,
+                success: function (data) {
+                    var options = "<option value=''>-- Select Doctor --</option>";
+
+                    for (var i = 0; i < data.length; i++) {
+                        options += "<option value='" + data[i].value + "'>" + data[i].text + "</option>";
+                    }
+
+                    document.getElementById("doctor").innerHTML = options;
+                    getSlots();
+                }
+            });
+        }
+
+        function getSlots() {
+            var DoctorId = document.getElementById("doctor").value;
+            var date = document.getElementById("date").value;
+
+            if (DoctorId === "" || date === "") {
+                document.getElementById("slot").innerHTML = "<option value=''>-- Select Slot --</option>";
+                return;
+            }
+
+            $.ajax({
+                type: "GET",
+                url: "/Appointment/GetSlots?DoctorId=" + DoctorId + "&date=" + date,
+                success: function (data) {
+                    var options = "<option value=''>-- Select Slot --</option>";
+
+                    for (var i = 0; i < data.length; i++) {
+                        options += "<option value='" + data[i].value + "'>" + data[i].text + "</option>";
+                    }
+
+                    document.getElementById("slot").innerHTML = options;
+                }
+            });
+        }
+    </script>
+}

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "gAllccN2e8n+DdMbK1ZCl+sxKgXCiXXCNZd+bfvg9THSG1KD6WTUcira4WBaIsej8XersywhQJ2WyEjd6zUATA==",
+  "dgSpecHash": "FXbsdOImn+5ysIcoqI2E+331CiKzvbSKARzh4Ta2Mg5x5XxcoZb9ODu/AS9UctWcQP0CYBe23iOOr2B9/SAfsw==",
   "success": true,
-  "projectFilePath": "C:\\Szkola\\WSB\\5\\programowanie_zaawansowane\\Projekt\\Projekt\\Projekt\\Projekt.csproj",
+  "projectFilePath": "C:\\Szkola\\WSB\\5\\programowanie_zaawansowane\\Projekt\\DZIALA- jeszcze tylko problem z DB\\Projekt\\Projekt.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Mariusz-pp\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\Mariusz-pp\\.nuget\\packages\\messagepack\\2.1.152\\messagepack.2.1.152.nupkg.sha512",

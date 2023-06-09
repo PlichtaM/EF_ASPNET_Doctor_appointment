@@ -10,23 +10,6 @@ namespace Projekt.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Appointments",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Specialization = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PatientName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DoctorId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Appointments", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
                 {
@@ -186,28 +169,81 @@ namespace Projekt.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.InsertData(
-                table: "Appointments",
-                columns: new[] { "Id", "Date", "DoctorId", "Notes", "PatientName", "Specialization" },
-                values: new object[,]
+            migrationBuilder.CreateTable(
+                name: "Appointments",
+                columns: table => new
                 {
-                    { 1, new DateTime(2023, 6, 8, 1, 8, 33, 971, DateTimeKind.Local).AddTicks(7683), 1, "Brak uwag", "John Doe", "Pediatrics" },
-                    { 2, new DateTime(2023, 6, 9, 1, 8, 33, 971, DateTimeKind.Local).AddTicks(7720), 2, "Brak uwag", "Jane Smith", "Dermatology" }
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Specialization = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DoctorId = table.Column<int>(type: "int", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Slot = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PatientId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Remarks = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DoctorId1 = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Appointments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Appointments_AspNetUsers_PatientId",
+                        column: x => x.PatientId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Appointments_Doctors_DoctorId",
+                        column: x => x.DoctorId,
+                        principalTable: "Doctors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Appointments_Doctors_DoctorId1",
+                        column: x => x.DoctorId1,
+                        principalTable: "Doctors",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Discriminator", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "1", 0, "177ed376-0bac-43e3-9ea2-82bd06f6b9a0", "User", "abc@abc.pl", true, false, null, null, "ABC@ABC.PL", "AQAAAAEAACcQAAAAEJl7LXWGtB3esT/sEReOlOI+ZcCdkUEjFW//R0VmpHwYBz2GX08mOXDYvwKqch3ZxA==", null, false, "85f63d79-9b11-4adb-80dc-5c023ff10f0b", false, "abc@abc.pl" });
+                values: new object[] { "1", 0, "f10af449-2928-4eff-a769-596dc9303333", "User", "abc@abc.pl", true, false, null, null, "ABC@ABC.PL", "AQAAAAEAACcQAAAAEGo3XM5WVQCy72XHVw1gQBWQrMn/Wnm9fz5gt/x6t3mNKVjBZWG1mFMK0u5UM6pDPg==", null, false, "b61156be-464e-49f6-a0a9-08a231e37a29", false, "abc@abc.pl" });
 
             migrationBuilder.InsertData(
                 table: "Doctors",
                 columns: new[] { "Id", "Name", "Specialization" },
-                values: new object[,]
-                {
-                    { 1, "Dr. Smith", "Pediatrics" },
-                    { 2, "Dr. Johnson", "Dermatology" }
-                });
+                values: new object[] { 1, "Dr. Smith", "Cardiology" });
+
+            migrationBuilder.InsertData(
+                table: "Doctors",
+                columns: new[] { "Id", "Name", "Specialization" },
+                values: new object[] { 2, "Dr. Johnson", "Dermatology" });
+
+            migrationBuilder.InsertData(
+                table: "Appointments",
+                columns: new[] { "Id", "Date", "DoctorId", "DoctorId1", "PatientId", "Remarks", "Slot", "Specialization" },
+                values: new object[] { 1, new DateTime(2023, 6, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, null, "1", "Regular checkup", new DateTime(2023, 6, 12, 9, 0, 0, 0, DateTimeKind.Unspecified), "Cardiology" });
+
+            migrationBuilder.InsertData(
+                table: "Appointments",
+                columns: new[] { "Id", "Date", "DoctorId", "DoctorId1", "PatientId", "Remarks", "Slot", "Specialization" },
+                values: new object[] { 2, new DateTime(2023, 6, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, null, "1", "Skin rash", new DateTime(2023, 6, 12, 10, 0, 0, 0, DateTimeKind.Unspecified), "Dermatology" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Appointments_DoctorId",
+                table: "Appointments",
+                column: "DoctorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Appointments_DoctorId1",
+                table: "Appointments",
+                column: "DoctorId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Appointments_PatientId",
+                table: "Appointments",
+                column: "PatientId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

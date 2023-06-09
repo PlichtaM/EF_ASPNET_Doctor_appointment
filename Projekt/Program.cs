@@ -12,13 +12,6 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
-
-// Add additional Identity configuration if needed
-// builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-//     .AddRoles<IdentityRole>()
-//     .AddDefaultTokenProviders()
-//     .AddEntityFrameworkStores<ApplicationDbContext>();
-
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();

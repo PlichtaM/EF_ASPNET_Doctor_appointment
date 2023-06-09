@@ -1,8 +1,36 @@
-﻿<h1>Witaj w systemie rezerwacji wizyt!</h1>
-<p>
-    <a asp-controller="Appointment" asp-action="Create">Umów wizytę</a>
-</p>
-<p>
-    <a asp-area="Identity" asp-page="/Account/Login">Zaloguj się</a>
-    <a asp-area="Identity" asp-page="/Account/Register">Zarejestruj się</a>
-</p>
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Welcome to the appointment reservation system!</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <style>
+        .text-center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="text-center">Welcome to the appointment reservation system!</h1>
+        </header>
+
+        <main>
+            <p class="text-center">
+                <a class="btn btn-primary" asp-controller="Appointment" asp-action="Create">Schedule an appointment</a>
+            </p>
+        </main>
+
+        <footer class="text-center">
+            <p>
+                <a class="btn btn-secondary" asp-area="Identity" asp-page="/Account/Login">Log in</a>
+                <a class="btn btn-secondary" asp-area="Identity" asp-page="/Account/Register">Register</a>
+            </p>
+        </footer>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

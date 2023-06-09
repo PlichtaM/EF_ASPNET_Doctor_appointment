@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Szkola\\WSB\\5\\programowanie_zaawansowane\\Projekt\\Projekt\\Projekt\\Projekt.csproj": {}
+    "C:\\Szkola\\WSB\\5\\programowanie_zaawansowane\\Projekt\\DZIALA- jeszcze tylko problem z DB\\Projekt\\Projekt.csproj": {}
   },
   "projects": {
-    "C:\\Szkola\\WSB\\5\\programowanie_zaawansowane\\Projekt\\Projekt\\Projekt\\Projekt.csproj": {
+    "C:\\Szkola\\WSB\\5\\programowanie_zaawansowane\\Projekt\\DZIALA- jeszcze tylko problem z DB\\Projekt\\Projekt.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Szkola\\WSB\\5\\programowanie_zaawansowane\\Projekt\\Projekt\\Projekt\\Projekt.csproj",
+        "projectUniqueName": "C:\\Szkola\\WSB\\5\\programowanie_zaawansowane\\Projekt\\DZIALA- jeszcze tylko problem z DB\\Projekt\\Projekt.csproj",
         "projectName": "Projekt",
-        "projectPath": "C:\\Szkola\\WSB\\5\\programowanie_zaawansowane\\Projekt\\Projekt\\Projekt\\Projekt.csproj",
+        "projectPath": "C:\\Szkola\\WSB\\5\\programowanie_zaawansowane\\Projekt\\DZIALA- jeszcze tylko problem z DB\\Projekt\\Projekt.csproj",
         "packagesPath": "C:\\Users\\Mariusz-pp\\.nuget\\packages\\",
-        "outputPath": "C:\\Szkola\\WSB\\5\\programowanie_zaawansowane\\Projekt\\Projekt\\Projekt\\obj\\",
+        "outputPath": "C:\\Szkola\\WSB\\5\\programowanie_zaawansowane\\Projekt\\DZIALA- jeszcze tylko problem z DB\\Projekt\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Projekt.Data;
 using Projekt.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Projekt.Controllers
@@ -18,64 +20,115 @@ namespace Projekt.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
-        {
-            var appointments = await _context.Appointments.ToListAsync();
-            return View(appointments);
-        }
-
+        // GET: Appointment/Create
         [Authorize]
         public IActionResult Create()
         {
+            ViewBag.Specializations = _context.Doctors.Select(d => d.Specialization).Distinct().ToList();
+            ViewBag.Doctors = new List<SelectListItem>();
             return View();
         }
 
-        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Appointment appointment)
         {
             if (ModelState.IsValid)
             {
-                if (IsAppointmentAvailable(appointment.Date))
+                if (User.Identity.IsAuthenticated)
                 {
-                    _context.Appointments.Add(appointment); 
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    appointment.PatientId = userId;
+
+                   
+
+                    var selectedDoctor = _context.Doctors.FirstOrDefault(d => d.Id == appointment.DoctorId);
+                    if (selectedDoctor != null)
+                    {
+                        _context.Add(appointment);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(MyAppointments));
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Invalid doctor selected.");
+                    }
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "The appointment slot is already taken.");
+                    return Unauthorized();
                 }
             }
+
+            ViewBag.Specializations = _context.Doctors.Select(d => d.Specialization).Distinct().ToList();
+            ViewBag.Doctors = new List<SelectListItem>();
             return View(appointment);
         }
 
-        [Authorize]
-        public async Task<IActionResult> MyAppointments()
+
+
+
+
+        public IActionResult GetDoctors(string specialization)
         {
-            var userId = User.Identity.Name;
-            var appointments = await _context.Appointments.Where(a => a.PatientName == userId).ToListAsync(); 
+            var doctors = _context.Doctors.Where(d => d.Specialization == specialization).ToList();
+            var doctorList = new List<SelectListItem>();
+
+            foreach (var doctor in doctors)
+            {
+                doctorList.Add(new SelectListItem { Value = doctor.Id.ToString(), Text = doctor.Name });
+            }
+
+            return Json(doctorList);
+        }
+
+        public IActionResult GetSlots(int doctorId, DateTime date)
+        {
+            var doctor = _context.Doctors.FirstOrDefault(d => d.Id == doctorId);
+            var appointments = _context.Appointments.Where(a => a.DoctorId == doctorId && a.Date.Date == date.Date).ToList();
+            var slots = new List<SelectListItem>();
+
+            // Generate time slots from 9 AM to 5 PM at 30 minutes interval
+            var startTime = new DateTime(date.Year, date.Month, date.Day, 9, 0, 0);
+            var endTime = new DateTime(date.Year, date.Month, date.Day, 17, 0, 0);
+
+            while (startTime < endTime)
+            {
+                var slotTime = startTime.ToString("HH:mm");
+
+                // Check if the slot is available
+                if (appointments.All(a => a.Slot.ToString("HH:mm") != slotTime))
+                {
+                    slots.Add(new SelectListItem { Value = slotTime, Text = slotTime });
+                }
+
+                startTime = startTime.AddMinutes(30);
+            }
+
+            return Json(slots);
+        }
+
+        [Authorize]
+        public IActionResult MyAppointments()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var appointments = _context.Appointments.Where(a => a.PatientId == userId).ToList();
             return View(appointments);
         }
 
-        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Cancel(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var appointment = await _context.Appointments.FindAsync(id); 
-            if (appointment != null)
+            var appointment = await _context.Appointments.FindAsync(id);
+            if (appointment == null)
             {
-                _context.Appointments.Remove(appointment); 
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
-            return RedirectToAction(nameof(MyAppointments));
-        }
 
-        private bool IsAppointmentAvailable(DateTime date)
-        {
-            return !_context.Appointments.Any(a => a.Date == date); 
+            _context.Appointments.Remove(appointment);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(MyAppointments));
         }
     }
 }

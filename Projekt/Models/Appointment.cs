@@ -8,17 +8,25 @@ namespace Projekt.Models
         public int Id { get; set; }
 
         [Required]
-        public DateTime Date { get; set; }
-
-        [Required]
         public string Specialization { get; set; }
 
         [Required]
-        public string PatientName { get; set; }
-
-        public string Notes { get; set; }
+        public int DoctorId { get; set; }
+       
+        public Doctor Doctor { get; set; }
 
         [Required]
-        public int DoctorId { get; set; } 
+        [DataType(DataType.Date)]
+        public DateTime Date { get; set; }
+
+        [Required]
+        [DataType(DataType.Time)]
+        public DateTime Slot { get; set; }
+
+        [Required]
+        public string PatientId { get; set; }
+        public User Patient { get; set; }
+
+        public string Remarks { get; set; }
     }
 }

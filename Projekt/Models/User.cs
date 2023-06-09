@@ -4,6 +4,5 @@ namespace Projekt.Models
 {
     public class User : IdentityUser
     {
-        
     }
 }
